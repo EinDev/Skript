@@ -157,7 +157,7 @@ public class ScriptLoader {
 	 */
 	@Nullable
 	public static Script getScript(File file) {
-		if (!file.isFile())
+		if (!file.isFile() && !Files.isSymbolicLink(file.toPath()))
 			throw new IllegalArgumentException("Something other than a file was provided.");
 		for (Script script : loadedScripts) {
 			if (file.equals(script.getConfig().getFile()))
@@ -173,7 +173,7 @@ public class ScriptLoader {
 	 * 	Empty if no scripts were found.
 	 */
 	public static Set<Script> getScripts(File directory) {
-		if (!directory.isDirectory())
+		if (!directory.isDirectory() && !Files.isSymbolicLink(directory.toPath()))
 			throw new IllegalArgumentException("Something other than a directory was provided.");
 		Set<Script> scripts = new HashSet<>();
 		//noinspection ConstantConditions - If listFiles still manages to return null, we should probably let the exception print
