@@ -157,7 +157,7 @@ public class ScriptLoader {
 	 */
 	@Nullable
 	public static Script getScript(File file) {
-		if (!Files.isDirectory(file.toPath()))
+		if (!file.isFile())
 			throw new IllegalArgumentException("Something other than a file was provided.");
 		for (Script script : loadedScripts) {
 			if (file.equals(script.getConfig().getFile()))
