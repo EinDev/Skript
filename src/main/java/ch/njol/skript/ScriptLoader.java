@@ -147,7 +147,7 @@ public class ScriptLoader {
 	 */
 	private static final FileFilter loadedScriptFilter =
 		f -> f != null
-			&& (f.isDirectory() && !f.getName().startsWith(".") || !f.isDirectory() && StringUtils.endsWithIgnoreCase(f.getName(), ".sk"))
+			&& (Files.isDirectory(f.toPath()) && !f.getName().startsWith(".") || !Files.isDirectory(f.toPath()) && StringUtils.endsWithIgnoreCase(f.getName(), ".sk"))
 			&& !f.getName().startsWith(DISABLED_SCRIPT_PREFIX) && !f.isHidden();
 
 	/**
@@ -157,7 +157,7 @@ public class ScriptLoader {
 	 */
 	@Nullable
 	public static Script getScript(File file) {
-		if (!file.isFile() && !Files.isSymbolicLink(file.toPath()))
+		if (!Files.isDirectory(file.toPath()))
 			throw new IllegalArgumentException("Something other than a file was provided.");
 		for (Script script : loadedScripts) {
 			if (file.equals(script.getConfig().getFile()))
@@ -173,12 +173,12 @@ public class ScriptLoader {
 	 * 	Empty if no scripts were found.
 	 */
 	public static Set<Script> getScripts(File directory) {
-		if (!directory.isDirectory() && !Files.isSymbolicLink(directory.toPath()))
+		if (!Files.isDirectory(directory.toPath()))
 			throw new IllegalArgumentException("Something other than a directory was provided.");
 		Set<Script> scripts = new HashSet<>();
 		//noinspection ConstantConditions - If listFiles still manages to return null, we should probably let the exception print
 		for (File file : directory.listFiles(loadedScriptFilter)) {
-			if (file.isDirectory()) {
+			if (Files.isDirectory(file.toPath())) {
 				scripts.addAll(getScripts(file));
 			} else {
 				Script script = getScript(file);
@@ -199,7 +199,7 @@ public class ScriptLoader {
 	 */
 	private static final FileFilter disabledScriptFilter =
 		f -> f != null
-			&& (f.isDirectory() && !f.getName().startsWith(".") || !f.isDirectory() && StringUtils.endsWithIgnoreCase(f.getName(), ".sk"))
+			&& (Files.isDirectory(f.toPath()) && !f.getName().startsWith(".") || !Files.isDirectory(f.toPath()) && StringUtils.endsWithIgnoreCase(f.getName(), ".sk"))
 			&& f.getName().startsWith(DISABLED_SCRIPT_PREFIX) && !f.isHidden();
 
 	/**
@@ -723,7 +723,7 @@ public class ScriptLoader {
 	 * @return A list of all successfully loaded structures.
 	 */
 	private static List<Config> loadStructures(File directory) {
-		if (!directory.isDirectory()) {
+		if (!Files.isDirectory(directory.toPath())) {
 			Config config = loadStructure(directory);
 			return config != null ? Collections.singletonList(config) : Collections.emptyList();
 		}
@@ -743,7 +743,7 @@ public class ScriptLoader {
 		List<Config> loadedDirectories = new ArrayList<>(files.length);
 		List<Config> loadedFiles = new ArrayList<>(files.length);
 		for (File file : files) {
-			if (file.isDirectory()) {
+			if (Files.isDirectory(file.toPath())) {
 				loadedDirectories.addAll(loadStructures(file));
 			} else {
 				Config cfg = loadStructure(file);

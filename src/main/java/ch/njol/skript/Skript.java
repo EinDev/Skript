@@ -355,7 +355,7 @@ public final class Skript extends JavaPlugin implements Listener {
 	 * @return The folder containing all Scripts.
 	 */
 	public File getScriptsFolder() {
-		if (!scriptsFolder.isDirectory())
+		if (!Files.isDirectory(scriptsFolder.toPath()))
 			//noinspection ResultOfMethodCallIgnored
 			scriptsFolder.mkdirs();
 		return scriptsFolder;
@@ -389,25 +389,25 @@ public final class Skript extends JavaPlugin implements Listener {
 			Skript.exception(e, "Update checker could not be initialized.");
 		}
 
-		if (!getDataFolder().isDirectory())
+		if (!Files.isDirectory(getDataFolder().toPath()))
 			getDataFolder().mkdirs();
 
 		scriptsFolder = new File(getDataFolder(), SCRIPTSFOLDER);
 		File config = new File(getDataFolder(), "config.sk");
 		File features = new File(getDataFolder(), "features.sk");
 		File lang = new File(getDataFolder(), "lang");
-		if (!scriptsFolder.isDirectory() || !config.exists() || !features.exists() || !lang.exists()) {
+		if (!Files.isDirectory(scriptsFolder.toPath()) || !config.exists() || !features.exists() || !lang.exists()) {
 			ZipFile f = null;
 			try {
 				boolean populateExamples = false;
-				if (!scriptsFolder.isDirectory()) {
+				if (!Files.isDirectory(scriptsFolder.toPath())) {
 					if (!scriptsFolder.mkdirs())
 						throw new IOException("Could not create the directory " + scriptsFolder);
 					populateExamples = true;
 				}
 
 				boolean populateLanguageFiles = false;
-				if (!lang.isDirectory()) {
+				if (!Files.isDirectory(lang.toPath())) {
 					if (!lang.mkdirs())
 						throw new IOException("Could not create the directory " + lang);
 					populateLanguageFiles = true;

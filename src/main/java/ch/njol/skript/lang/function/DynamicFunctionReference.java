@@ -17,6 +17,7 @@ import org.skriptlang.skript.util.Validated;
 import java.io.File;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -227,7 +228,7 @@ public class DynamicFunctionReference<Result>
 		if (source == null || source.isEmpty())
 			return null;
 		@Nullable File file = ScriptLoader.getScriptFromName(source);
-		if (file == null || file.isDirectory())
+		if (file == null || Files.isDirectory(file.toPath()))
 			return null;
 		return ScriptLoader.getScript(file);
 	}

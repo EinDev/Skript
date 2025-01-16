@@ -44,7 +44,7 @@ public abstract class FileUtils {
 		if (toKeep < 0)
 			throw new IllegalArgumentException("Called with invalid input, 'toKeep' can not be less than 0");
 		File backupDir = new File(varFile.getParentFile(), "backups" + File.separator);
-		if (!backupDir.exists() || !backupDir.isDirectory())
+		if (!backupDir.exists() || !Files.isDirectory(backupDir.toPath()))
 			throw new IOException("Backup directory not found");
 		ArrayList<File> files = new ArrayList<File>(Arrays.asList(backupDir.listFiles()));
 		if (files == null || files.size() <= toKeep)
@@ -98,7 +98,7 @@ public abstract class FileUtils {
 	public static Collection<File> renameAll(final File directory, final Converter<String, String> renamer) throws IOException {
 		final Collection<File> changed = new ArrayList<>();
 		for (final File f : directory.listFiles()) {
-			if (f.isDirectory()) {
+			if (Files.isDirectory(f.toPath())) {
 				changed.addAll(renameAll(f, renamer));
 			} else {
 				final String name = f.getName();

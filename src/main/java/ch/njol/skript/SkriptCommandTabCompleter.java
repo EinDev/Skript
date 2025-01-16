@@ -55,7 +55,7 @@ public class SkriptCommandTabCompleter implements TabCompleter {
 						if (fileString.isEmpty())
 							return;
 
-						if (file.isDirectory()) {
+						if (Files.isDirectory(file.toPath())) {
 							fileString = fileString + fs; // Add file separator at the end of directories
 						} else if (file.getParentFile().toPath().toString().equals(scriptsPathString)) {
 							fileString = fileString.substring(1); // Remove file separator from the beginning of files or directories in root only

@@ -18,6 +18,7 @@ import org.bukkit.event.Event;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -80,7 +81,7 @@ public class ExprScript extends SimpleExpression<Script> {
 				return new Script[0];
 			File folder = new File(Skript.getInstance().getScriptsFolder(), string);
 			List<Script> scripts = new ArrayList<>();
-			if (!folder.isDirectory())
+			if (!Files.isDirectory(folder.toPath()))
 				return new Script[0];
 			this.getScripts(folder, scripts);
 			return scripts.toArray(new Script[0]);
@@ -100,7 +101,7 @@ public class ExprScript extends SimpleExpression<Script> {
 		FileFilter disabled = ScriptLoader.getDisabledScriptsFilter();
 		FileFilter filter = f -> loaded.accept(f) || disabled.accept(f);
 		for (File file : files) {
-			if (file.isDirectory()) {
+			if (Files.isDirectory(file.toPath())) {
 				this.getScripts(file, scripts);
 			} else if (filter.accept(file)) {
 				@Nullable Script handle = ExprScript.getHandle(file);
@@ -133,7 +134,7 @@ public class ExprScript extends SimpleExpression<Script> {
 	}
 
 	static @Nullable Script getHandle(@Nullable File file) {
-		if (file == null || file.isDirectory())
+		if (file == null || Files.isDirectory(file.toPath()))
 			return null;
 		Script script = ScriptLoader.getScript(file);
 		if (script != null)

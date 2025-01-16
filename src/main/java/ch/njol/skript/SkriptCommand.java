@@ -173,7 +173,7 @@ public class SkriptCommand implements CommandExecutor {
 					if (scriptFile == null)
 						return true;
 
-					if (!scriptFile.isDirectory()) {
+					if (!Files.isDirectory(scriptFile.toPath())) {
 						if (ScriptLoader.getDisabledScriptsFilter().accept(scriptFile)) {
 							info(sender, "reload.script disabled", scriptFile.getName().substring(ScriptLoader.DISABLED_SCRIPT_PREFIX_LENGTH), StringUtils.join(args, " ", 1, args.length));
 							return true;
@@ -228,7 +228,7 @@ public class SkriptCommand implements CommandExecutor {
 					if (scriptFile == null)
 						return true;
 
-					if (!scriptFile.isDirectory()) {
+					if (!Files.isDirectory(scriptFile.toPath())) {
 						if (ScriptLoader.getLoadedScriptsFilter().accept(scriptFile)) {
 							info(sender, "enable.single.already enabled", scriptFile.getName(), StringUtils.join(args, " ", 1, args.length));
 							return true;
@@ -293,7 +293,7 @@ public class SkriptCommand implements CommandExecutor {
 					if (scriptFile == null) // TODO allow disabling deleted/renamed scripts
 						return true;
 
-					if (!scriptFile.isDirectory()) {
+					if (!Files.isDirectory(scriptFile.toPath())) {
 						if (ScriptLoader.getDisabledScriptsFilter().accept(scriptFile)) {
 							info(sender, "disable.single.already disabled", scriptFile.getName().substring(ScriptLoader.DISABLED_SCRIPT_PREFIX_LENGTH));
 							return true;
@@ -458,7 +458,7 @@ public class SkriptCommand implements CommandExecutor {
 				info(sender, "list.disabled.header");
 				ScriptLoader.getDisabledScripts().stream()
 						.flatMap(file -> {
-							if (file.isDirectory()) {
+							if (Files.isDirectory(file.toPath())) {
 								return getSubFiles(file).stream();
 							}
 							return Arrays.stream(new File[]{file});
@@ -483,9 +483,9 @@ public class SkriptCommand implements CommandExecutor {
 
 	private static List<File> getSubFiles(File file) {
 		List<File> files = new ArrayList<>();
-		if (file.isDirectory()) {
+		if (Files.isDirectory(file.toPath())) {
 			for (File listFile : file.listFiles(f -> !f.isHidden())) {
-				if (listFile.isDirectory()) {
+				if (Files.isDirectory(listFile.toPath())) {
 					files.addAll(getSubFiles(listFile));
 				} else if (listFile.getName().endsWith(".sk")) {
 					files.add(listFile);
@@ -539,7 +539,7 @@ public class SkriptCommand implements CommandExecutor {
 
 		Set<File> changed = new HashSet<>();
 		for (File file : folder.listFiles()) {
-			if (file.isDirectory()) {
+			if (Files.isDirectory(file.toPath())) {
 				changed.addAll(toggleFiles(file, enable));
 			} else {
 				if (filter.accept(file)) {
